@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <cstdlib>
 #include <string>
 #include "windows.h"
@@ -8,11 +8,11 @@
 using namespace std;
 string username;
 string cards[52];
-int money;
+int money;//счёт пользователя
 
 
 void roulette() {
-	srand(time(0));
+	srand(time(0));//тру рандом
 	string numbers[]{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "even", "odd" };
 	int bet;
 	string choise;
@@ -56,15 +56,17 @@ void roulette() {
 			break;
 		}
 		else {
-			cout << "\nNot enough money or uncorrect number or even/odd\n";
+			cout << "\nNot enough money\n";
 		}
 	}
-	int k = 0;
+	int k = 0;//счётчик для цикла
 	int randnum;
+	string randnumstr;
 	system("cls");
 	while (k < 10)
 	{
 		randnum = rand() % 10;
+		randnumstr = to_string(randnum);
 		string randcurs[] = { " ", " ", " ", " "," "," "," "," "," "," ", "|" };
 		cout << "|";
 		for (int i = 0; i < 11; i++) {
@@ -82,7 +84,7 @@ void roulette() {
 		Sleep(200);
 		if (k < 10) { system("cls"); }
 	}
-	string randnumstr = to_string(randnum);
+
 	if (choise == "even" || choise == "odd") {
 		if (choise == "even" && randnum % 2 == 0) {
 			cout << "\nWin\n";
@@ -119,12 +121,7 @@ void roulette() {
 	cout << "\nYour balanse: " << money << "$\n";
 }
 
-void blackjack() {
-	srand(time(0));
-	int sum = 0;
-	int bet;
-	int cardrank;
-	int cardsuit;
+void cardsinit() {
 	int rank[] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13 };
 	int suit[] = { 0,1,2,3 };//0 - pika 1 - cherva 2 - kresti 3 - buba
 	int i = 0;
@@ -136,29 +133,15 @@ void blackjack() {
 			cards[i] = strrank + strsuit;
 		}
 	}
-	cout << "$$                    $$  $$$$$$$$$$$$  $$          $$               $$$$$       $$$$       $$          $$  $$$$$$$$$$$$\n"
-		" $$                  $$   $$            $$          $$            $$$$        $$$    $$$    $$$$      $$$$  $$          \n"
-		"  $$                $$    $$            $$          $$           $$         $$$        $$$  $$  $$  $$  $$  $$          \n"
-		"   $$      $$      $$     $$$$$$$$$$$$  $$          $$          $$          $$          $$  $$    $$    $$  $$$$$$$$$$$$\n"
-		"    $$    $$$$    $$      $$$$$$$$$$$$  $$          $$          $$          $$          $$  $$          $$  $$$$$$$$$$$$\n"
-		"     $$  $$  $$  $$       $$            $$          $$           $$         $$$        $$$  $$          $$  $$          \n"
-		"      $$$$    $$$$        $$            $$          $$            $$$$        $$$    $$$    $$          $$  $$          \n"
-		"       $$      $$         $$$$$$$$$$$$  $$$$$$$$$$  $$$$$$$$$$       $$$$$       $$$$       $$          $$  $$$$$$$$$$$$\n\n\n";
+}
 
-	cout << "\t\t\t\t$$$$  $       $     $$$$ $  $     $$$$    $     $$$$ $  $\n"
-		"\t\t\t\t$   $ $      $ $   $     $ $         $   $ $   $     $ $ \n"
-		"\t\t\t\t$$$$  $     $   $  $     $$          $  $   $  $     $$  \n"
-		"\t\t\t\t$   $ $    $$$$$$$ $     $ $    $$  $$ $$$$$$$ $     $ $ \n"
-		"\t\t\t\t$$$$  $$$$ $     $  $$$$ $  $    $$$$  $     $  $$$$ $  $\n\n\n";
-
-	cout << "Rules: \n";
-	cout << "\t1. You have to draw the cards one by one. \n\t   The winner is the one who scored the most points, but did not exceed 21\n"
-		"\t2. Card values: \n\t Ace - 1\n\t 2 - 2 \n\t 3 - 3 \n\t 4 - 4 \n\t 5 - 5 \n\t 6 - 6\n\t 7 - 7\n\t 8 - 8\n\t 9 - 9\n\t 10 - 10\n\t Jack - 10 \n\t Qween - 10 \n\t King - 10\n";
-	cout << "\n\n\nbet: ";
-	cin >> bet;
+int dealercards() {
+	srand(time(0));
+	int cardrank, cardsuit, dealerCardSum = 0, bet;
 	system("cls");
+	cardsinit();
 	cout << "Dealer cards: ";
-	zero:
+	restart:
 	while (true) {
 		int randcard = rand() % 53 + 1;
 		cardrank = stoi(cards[randcard]) / 10;
@@ -166,7 +149,7 @@ void blackjack() {
 		cout << "[";
 		switch (cardrank)
 		{
-		case 0: goto zero;
+		case 0: goto restart;
 		case 1: cout << "Ace"; break;
 		case 2: cout << "2"; break;
 		case 3: cout << "3"; break;
@@ -191,14 +174,108 @@ void blackjack() {
 		default: break;
 		}
 		cout << "], ";
-		//////////замена элемента доделай
-		sum += cardrank;
-		if (sum >= 17) {
-			cout << "Sum: " << sum;
+		dealerCardSum += cardrank;
+		if (dealerCardSum > 21) {
+			cout << "Sum: " << dealerCardSum;
+			dealerCardSum = 0;
+			break;
+		}
+		if (dealerCardSum >= 17) {
+			cout << "Sum: " << dealerCardSum;
 			break;
 		}
 	}
+	return dealerCardSum;
 }
+
+int playercards() {
+	string choise;
+	//srand(time(0));
+	int cardrank, cardsuit, playerCardSum = 0, bet;
+	cout << "\nPlayer cards: ";
+	restart:
+	while (true) {
+		int randcard = rand() % 53 + 1;
+		cardrank = stoi(cards[randcard]) / 10;
+		cardsuit = stoi(cards[randcard]) % 10;
+		cout << "[";
+		switch (cardrank)
+		{
+		case 0: goto restart;
+		case 1: cout << "Ace"; break;
+		case 2: cout << "2"; break;
+		case 3: cout << "3"; break;
+		case 4: cout << "4"; break;
+		case 5: cout << "5"; break;
+		case 6: cout << "6"; break;
+		case 7: cout << "7"; break;
+		case 8: cout << "8"; break;
+		case 9: cout << "9"; break;
+		case 10: cout << "10"; break;
+		case 11: cout << "Jack"; break;
+		case 12: cout << "Qween"; break;
+		case 13: cout << "King"; break;
+		default: break;
+		}
+		switch (cardsuit)
+		{
+		case 0: cout << " Spades"; break;
+		case 1: cout << " Hearts"; break;
+		case 2: cout << " Clubs"; break;
+		case 3: cout << " Diamonds"; break;
+		default: break;
+		}
+		playerCardSum += cardrank;
+		if (playerCardSum > 21) {
+			cout << "], Sum: " << playerCardSum;
+			playerCardSum = 0;
+			break;
+		}
+		cout << "], Sum = " << playerCardSum;
+		cout << "\nDo you want more card? (y/n)\n";
+		cin >> choise;
+		if (choise == "n") {
+			cout << "Sum: " << playerCardSum;
+			break;
+		}
+	}
+	return playerCardSum;
+}
+
+void bjgame() {
+	int dealerCardSum, playerCardSum, bet;
+	{
+		cout << "$$                    $$  $$$$$$$$$$$$  $$          $$               $$$$$       $$$$       $$          $$  $$$$$$$$$$$$\n"
+			" $$                  $$   $$            $$          $$            $$$$        $$$    $$$    $$$$      $$$$  $$          \n"
+			"  $$                $$    $$            $$          $$           $$         $$$        $$$  $$  $$  $$  $$  $$          \n"
+			"   $$      $$      $$     $$$$$$$$$$$$  $$          $$          $$          $$          $$  $$    $$    $$  $$$$$$$$$$$$\n"
+			"    $$    $$$$    $$      $$$$$$$$$$$$  $$          $$          $$          $$          $$  $$          $$  $$$$$$$$$$$$\n"
+			"     $$  $$  $$  $$       $$            $$          $$           $$         $$$        $$$  $$          $$  $$          \n"
+			"      $$$$    $$$$        $$            $$          $$            $$$$        $$$    $$$    $$          $$  $$          \n"
+			"       $$      $$         $$$$$$$$$$$$  $$$$$$$$$$  $$$$$$$$$$       $$$$$       $$$$       $$          $$  $$$$$$$$$$$$\n\n\n";
+
+		cout << "\t\t\t\t$$$$  $       $     $$$$ $  $     $$$$    $     $$$$ $  $\n"
+			"\t\t\t\t$   $ $      $ $   $     $ $         $   $ $   $     $ $ \n"
+			"\t\t\t\t$$$$  $     $   $  $     $$          $  $   $  $     $$  \n"
+			"\t\t\t\t$   $ $    $$$$$$$ $     $ $    $$  $$ $$$$$$$ $     $ $ \n"
+			"\t\t\t\t$$$$  $$$$ $     $  $$$$ $  $    $$$$  $     $  $$$$ $  $\n\n\n";
+
+		cout << "Rules: \n";
+		cout << "\t1. You have to draw the cards one by one. \n\t   The winner is the one who scored the most points, but did not exceed 21\n"
+			"\t2. Card values: \n\t Ace - 1\n\t 2 - 2 \n\t 3 - 3 \n\t 4 - 4 \n\t 5 - 5 \n\t 6 - 6\n\t 7 - 7\n\t 8 - 8\n\t 9 - 9\n\t 10 - 10\n\t Jack - 10 \n\t Qween - 10 \n\t King - 10\n";
+
+	}
+	cout << "Your bet: ";
+	cin >> bet;
+	cardsinit();
+	dealerCardSum = dealercards();
+	playerCardSum = playercards();
+	if (playerCardSum > dealerCardSum) { cout << "\nWin!\n"; money += bet; }
+	else if (playerCardSum < dealerCardSum) { cout << "\nLose(\n"; money -= bet; }
+	else { cout << "\nDraw\n"; money = money; }
+	cout << "You balance: " << money << "$\n";
+}
+
 
 int menu() {
 	int choise;
@@ -220,7 +297,7 @@ int menu() {
 		switch (choise)
 		{
 		case 1: roulette(); break;
-		case 2: blackjack(); break;
+		case 2: bjgame(); break;
 		case 3: cout << "\nSee you soon"; return(0); break;
 		default:cout << "Unknown command \n"; system("PAUSE"); system("cls");
 		}
@@ -254,7 +331,7 @@ int main() {
 		if (money > 0) {
 			break;
 		}
-		else {
+		else { 
 			cout << "Nice joke, but our casino is very serios. I'm patient. let's try again.\n";
 			cout << "Enter the money for the game: \n$ ";
 		}
